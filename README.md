@@ -12,23 +12,23 @@ The recommended way of installing is using Composer.
 
 command line
 ```
-composer require enjoy-it/php-fcm
+composer require paragraph1/php-fcm
 ```
 
 composer.json
 ```
 "require": {
-    "enjoy-it/php-fcm": "*"
+    "paragraph1/php-fcm": "*"
 }
 ```
 
 #Send to Device
 also see https://firebase.google.com/docs/cloud-messaging/downstream
 ```php
-use enjoy-it\phpFCM\Client;
-use enjoy-it\phpFCM\Message;
-use enjoy-it\phpFCM\Recipient\Device;
-use enjoy-it\phpFCM\Notification;
+use paragraph1\phpFCM\Client;
+use paragraph1\phpFCM\Message;
+use paragraph1\phpFCM\Recipient\Device;
+use paragraph1\phpFCM\Notification;
 
 require_once 'vendor/autoload.php';
 
@@ -54,10 +54,10 @@ var_dump($response->getStatusCode());
 #Send to topic
 also see https://firebase.google.com/docs/cloud-messaging/topic-messaging
 ```php
-use enjoy-it\phpFCM\Client;
-use enjoy-it\phpFCM\Message;
-use enjoy-it\phpFCM\Recipient\Topic;
-use enjoy-it\phpFCM\Notification;
+use paragraph1\phpFCM\Client;
+use paragraph1\phpFCM\Message;
+use paragraph1\phpFCM\Recipient\Topic;
+use paragraph1\phpFCM\Notification;
 
 require_once 'vendor/autoload.php';
 
@@ -80,7 +80,7 @@ var_dump($response->getStatusCode());
 
 #Subscribe device to the topic
 ```php
-use enjoy-it\phpFCM\Client;
+use paragraph1\phpFCM\Client;
 
 $apiKey = '_YOUR_SERVER_KEY_';
 $client = new Client();
@@ -92,7 +92,7 @@ var_dump($response->getBody()->getContents());
 ```
 #Remove device to the topic
 ```php
-use enjoy-it\phpFCM\Client;
+use paragraph1\phpFCM\Client;
 
 $apiKey = '_YOUR_SERVER_KEY_';
 $client = new Client();

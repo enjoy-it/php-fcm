@@ -177,38 +177,30 @@ class Message implements \JsonSerializable
     {
         switch ($this->recipientType) {
             case Topic::class:
-                if (count($this->recipients) > 1 || is_array(current($this->recipients)->getIdentifier())) {
-                    $topics = array_map(
-                        function (Topic $topic) {
-                            $identity = $topic->getIdentifier();
-
-                            if (is_array($identity)) {
-                                $conditions = array_map(function ($condition) {
-                                    return sprintf("'%s' in topics", $condition);
-                                }, $identity);
-
-                                return '(' . implode(' && ', $conditions) . ')';
-                            } else {
-                                return sprintf("'%s' in topics", $topic->getIdentifier());
-                            }
-                        },
-                        $this->recipients
-                    );
-                    $jsonData['condition'] = implode(' || ', $topics);
+                $topics = current($this->recipients)->getIdentifier();
+                if (count($this->recipients) > 1 || is_array($topics)) {
+                    $conditions = array_map(function($condition) {
+                        preg_match_all('/[a-zA-Z0-9_-]+/', $condition, $match);
+                        foreach ($match[0] as $item) {
+                            $condition = str_replace($item, "{$item} in topics", $condition);
+                        }
+                        return $condition;
+                    }, $topics);
+                    $jsonData['condition'] = $conditions;
                     return;
                 }
-                $jsonData['to'] = sprintf('/topics/%s', current($this->recipients)->getIdentifier());
+                $jsonData['to'] = sprintf('/topics/%s', $topics);
+                break;
+            case Device::class:
+                $devices = current($this->recipients)->getIdentifier();
+                if (count($devices) == 1) {
+                    $jsonData['to'] = current($devices);
+                } else {
+                    $jsonData['registration_ids'] = $devices;
+                }
                 break;
             default:
-                if (count($this->recipients) === 1) {
-                    $jsonData['to'] = current($this->recipients)->getIdentifier();
-                } elseif(count($this->recipients) > 1) {
-                    $jsonData['registration_ids'] = array();
-
-                    foreach($this->recipients as $recipient) {
-                        $jsonData['registration_ids'][] = $recipient->getIdentifier();
-                    }
-                }
+                throw new \UnexpectedValueException('PhpFirebaseCloudMessaging only supports single topic and single device messages yet');
         }
     }
 }

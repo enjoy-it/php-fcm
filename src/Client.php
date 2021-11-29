@@ -9,6 +9,7 @@ use GuzzleHttp;
 class Client implements ClientInterface
 {
     const DEFAULT_API_URL = 'https://fcm.googleapis.com/fcm/send';
+    const DEFAULT_TOPIC_GET_DEVICE_API_URL = 'https://iid.googleapis.com/iid/info';
     const DEFAULT_TOPIC_ADD_SUBSCRIPTION_API_URL = 'https://iid.googleapis.com/iid/v1:batchAdd';
     const DEFAULT_TOPIC_REMOVE_SUBSCRIPTION_API_URL = 'https://iid.googleapis.com/iid/v1:batchRemove';
 
@@ -123,6 +124,25 @@ class Client implements ClientInterface
                     'to' => '/topics/' . $topic_id,
                     'registration_tokens' => $recipients_tokens,
                 ])
+            ]
+        );
+    }
+
+
+    /**
+     * @param string $token
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function getDeviceInfo($token)
+    {
+        return $this->guzzleClient->get(
+            self::DEFAULT_TOPIC_GET_DEVICE_API_URL .'/'. $token,
+            [
+                'headers' => [
+                    'Authorization' => sprintf('key=%s', $this->apiKey),
+                    'Content-Type' => 'application/json'
+                ],
             ]
         );
     }
