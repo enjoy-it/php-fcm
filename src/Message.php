@@ -177,19 +177,17 @@ class Message implements \JsonSerializable
     {
         switch ($this->recipientType) {
             case Topic::class:
-                $topics = current($this->recipients)->getIdentifier();
-                if (count($this->recipients) > 1 || is_array($topics)) {
-                    $conditions = array_map(function($condition) {
-                        preg_match_all('/[a-zA-Z0-9_-]+/', $condition, $match);
-                        foreach ($match[0] as $item) {
-                            $condition = str_replace($item, "{$item} in topics", $condition);
-                        }
-                        return $condition;
-                    }, $topics);
-                    $jsonData['condition'] = $conditions;
-                    return;
-                }
-                $jsonData['to'] = sprintf('/topics/%s', $topics);
+                $topics = (array)current($this->recipients)->getIdentifier();
+                $conditions = array_map(function($condition) {
+                    preg_match_all('/[a-zA-Z0-9_-]+/', $condition, $match);
+                    foreach ($match[0] as $item) {
+                        $condition = str_replace($item, "'{$item}' in topics", $condition);
+                    }
+                    return "({$condition})";
+                }, $topics);
+
+                $jsonData['condition'] =  implode(' || ', $conditions);
+//                $jsonData['to'] = sprintf('/topics/%s', $topics);
                 break;
             case Device::class:
                 $devices = current($this->recipients)->getIdentifier();
