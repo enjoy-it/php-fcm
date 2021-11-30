@@ -137,7 +137,7 @@ class Client implements ClientInterface
     public function getDeviceInfo($token)
     {
         return $this->guzzleClient->get(
-            self::DEFAULT_TOPIC_GET_DEVICE_API_URL .'/'. $token,
+            self::DEFAULT_TOPIC_GET_DEVICE_API_URL .'/'. $token . '?details=true',
             [
                 'headers' => [
                     'Authorization' => sprintf('key=%s', $this->apiKey),
