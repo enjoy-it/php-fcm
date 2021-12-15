@@ -179,7 +179,7 @@ class Message implements \JsonSerializable
             case Topic::class:
                 $topics = (array)current($this->recipients)->getIdentifier();
                 $conditions = array_map(function($condition) {
-                    preg_match_all('/[a-zA-Z0-9_-]+/', $condition, $match);
+                    preg_match_all('/[\.a-zA-Z0-9_-]+/', $condition, $match);
                     foreach ($match[0] as $item) {
                         $condition = str_replace($item, "'{$item}' in topics", $condition);
                     }
